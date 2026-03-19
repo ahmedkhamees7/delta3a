@@ -1,693 +1,383 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Egypt Real Estate Dashboard 2021-2030</title>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <link rel="stylesheet" href="style.css">
-
-  <style>
-    body {
-      background: #f5f7fb;
-    }
-
-    /* ===== Floating Navbar ===== */
-    .topbar-wrap {
-      padding: 20px 38px 0;
-    }
-
-    .topbar-nav {
-      max-width: 1160px;
-      margin: 0 auto;
-      border-radius: 22px;
-      background: rgba(10, 18, 32, 0.90) !important;
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.10);
-      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.14);
-      padding: 14px 20px;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .topbar-nav::after {
-      content: "";
-      position: absolute;
-      right: 24px;
-      bottom: 0;
-      width: 180px;
-      height: 2px;
-      background: linear-gradient(
-        90deg,
-        rgba(13, 202, 240, 0),
-        rgba(13, 202, 240, 0.95),
-        rgba(13, 202, 240, 0)
-      );
-      animation: underlineMove 3s ease-in-out infinite;
-      pointer-events: none;
-    }
-
-    .topbar-nav.nav-scrolled {
-      background: rgba(8, 15, 28, 0.96) !important;
-      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.18);
-      transform: translateY(-2px);
-    }
-
-    .platform-brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      text-decoration: none;
-      color: #fff !important;
-      min-width: 0;
-      animation: navBrandIn 0.7s ease;
-    }
-
-    .platform-logo-box {
-      width: 48px;
-      height: 48px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 10px 25px rgba(13, 110, 253, 0.24);
-      transition: transform 0.28s ease, box-shadow 0.28s ease;
-      flex-shrink: 0;
-      position: relative;
-    }
-
-    .platform-logo-box::before {
-      content: "";
-      position: absolute;
-      inset: 1px;
-      border-radius: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.20);
-      pointer-events: none;
-    }
-
-    .platform-brand:hover .platform-logo-box {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 0 14px 30px rgba(13, 110, 253, 0.30);
-    }
-
-    .platform-logo-box i {
-      color: #fff;
-      font-size: 1.2rem;
-    }
-
-    .platform-brand-text {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.05;
-      min-width: 0;
-    }
-
-    .platform-brand-title {
-      font-size: 1.12rem;
-      font-weight: 700;
-      color: #ffffff;
-      letter-spacing: 0.3px;
-      white-space: nowrap;
-    }
-
-    .platform-brand-subtitle {
-      font-size: 0.73rem;
-      color: rgba(255, 255, 255, 0.72);
-      margin-top: 4px;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    .nav-tools {
-      animation: navToolsIn 0.8s ease;
-    }
-
-    .nav-chip-btn,
-    .nav-chip-select {
-      border-radius: 12px !important;
-      min-height: 42px;
-      border: 1px solid rgba(255, 255, 255, 0.10);
-      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
-    }
-
-    .nav-chip-btn:hover,
-    .nav-chip-select:hover {
-      transform: translateY(-1px);
-    }
-
-    .nav-city-btn {
-      background: rgba(255, 255, 255, 0.08) !important;
-      color: #fff !important;
-    }
-
-    .nav-city-btn:hover {
-      background: rgba(255, 255, 255, 0.13) !important;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.10);
-    }
-
-    .nav-gov-btn {
-      background: linear-gradient(135deg, #0d6efd, #0b5ed7) !important;
-      border: none !important;
-      box-shadow: 0 10px 22px rgba(13, 110, 253, 0.22);
-      font-weight: 600;
-    }
-
-    .nav-gov-btn:hover {
-      box-shadow: 0 14px 26px rgba(13, 110, 253, 0.30);
-    }
-
-    .nav-chip-select {
-      background-color: #fff;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.05);
-    }
-
-    .nav-menu {
-      border: none !important;
-      border-radius: 14px !important;
-      overflow: hidden;
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.14);
-      animation: navMenuIn 0.18s ease;
-    }
-
-    .nav-menu .dropdown-item {
-      padding-top: 10px;
-      padding-bottom: 10px;
-      transition: background-color 0.2s ease, padding-right 0.2s ease;
-    }
-
-    .nav-menu .dropdown-item:hover {
-      background: rgba(13, 110, 253, 0.08);
-      padding-right: 20px;
-    }
-
-    /* ===== Footer ===== */
-    .footer-section {
-      background: linear-gradient(135deg, #081224, #0d1b3a, #10264d);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .footer-bg {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 20% 20%, rgba(13, 202, 240, 0.12), transparent 25%),
-        radial-gradient(circle at 80% 30%, rgba(13, 110, 253, 0.12), transparent 25%),
-        radial-gradient(circle at 50% 100%, rgba(255, 255, 255, 0.05), transparent 30%);
-      animation: bgMove 10s ease-in-out infinite alternate;
-    }
-
-    .footer-glow {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(70px);
-      opacity: 0.35;
-      animation: floatGlow 8s ease-in-out infinite;
-    }
-
-    .footer-glow-1 {
-      width: 220px;
-      height: 220px;
-      background: #0dcaf0;
-      top: -60px;
-      left: -60px;
-    }
-
-    .footer-glow-2 {
-      width: 260px;
-      height: 260px;
-      background: #0d6efd;
-      bottom: -100px;
-      right: -80px;
-      animation-delay: 2s;
-    }
-
-    .footer-brand {
-      font-size: 2rem;
-      letter-spacing: 0.5px;
-      position: relative;
-      display: inline-block;
-    }
-
-    .footer-brand::after {
-      content: "";
-      display: block;
-      width: 65%;
-      height: 3px;
-      margin-top: 10px;
-      border-radius: 10px;
-      background: linear-gradient(90deg, #0dcaf0, transparent);
-      animation: linePulse 2s infinite ease-in-out;
-    }
-
-    .footer-text {
-      color: rgba(255, 255, 255, 0.78);
-      line-height: 1.9;
-      max-width: 95%;
-    }
-
-    .footer-title {
-      font-weight: 700;
-      font-size: 1.2rem;
-      position: relative;
-      display: inline-block;
-      margin-bottom: 1rem;
-    }
-
-    .footer-title::after {
-      content: "";
-      position: absolute;
-      right: 0;
-      bottom: -8px;
-      width: 45px;
-      height: 3px;
-      border-radius: 20px;
-      background: #0dcaf0;
-      transition: 0.4s ease;
-    }
-
-    .footer-title:hover::after {
-      width: 70px;
-    }
-
-    .footer-links li {
-      margin-bottom: 12px;
-    }
-
-    .footer-links a {
-      color: rgba(255, 255, 255, 0.78);
-      text-decoration: none;
-      transition: all 0.35s ease;
-      position: relative;
-    }
-
-    .footer-links a::before {
-      content: "";
-      position: absolute;
-      right: -12px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 0;
-      height: 2px;
-      background: #0dcaf0;
-      transition: 0.35s ease;
-    }
-
-    .footer-links a:hover {
-      color: #fff;
-      padding-right: 12px;
-      text-shadow: 0 0 10px rgba(13, 202, 240, 0.5);
-    }
-
-    .footer-links a:hover::before {
-      width: 8px;
-    }
-
-    .footer-contact li {
-      color: rgba(255, 255, 255, 0.82);
-      transition: 0.3s ease;
-    }
-
-    .footer-contact li:hover {
-      transform: translateX(-4px);
-      color: #fff;
-    }
-
-    .footer-social .social-icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      color: #fff;
-      font-size: 18px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(8px);
-      transition: all 0.35s ease;
-    }
-
-    .footer-social .social-icon:hover {
-      transform: translateY(-8px) scale(1.08);
-      background: linear-gradient(135deg, #0dcaf0, #0d6efd);
-      color: #fff;
-      box-shadow: 0 12px 25px rgba(13, 202, 240, 0.35);
-    }
-
-    .footer-line {
-      border-color: rgba(255, 255, 255, 0.12) !important;
-    }
-
-    /* ===== Animations ===== */
-    @keyframes navBrandIn {
-      from {
-        opacity: 0;
-        transform: translateX(-18px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @keyframes navToolsIn {
-      from {
-        opacity: 0;
-        transform: translateX(18px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    @keyframes navMenuIn {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes underlineMove {
-      0%, 100% {
-        transform: translateX(0);
-        opacity: 0.6;
-      }
-      50% {
-        transform: translateX(-32px);
-        opacity: 1;
-      }
-    }
-
-    @keyframes floatGlow {
-      0% {
-        transform: translateY(0) translateX(0) scale(1);
-      }
-      50% {
-        transform: translateY(-20px) translateX(15px) scale(1.08);
-      }
-      100% {
-        transform: translateY(10px) translateX(-10px) scale(0.96);
-      }
-    }
-
-    @keyframes bgMove {
-      0% {
-        transform: scale(1) translateY(0);
-      }
-      100% {
-        transform: scale(1.05) translateY(-10px);
-      }
-    }
-
-    @keyframes linePulse {
-      0%, 100% {
-        opacity: 0.7;
-        width: 65%;
-      }
-      50% {
-        opacity: 1;
-        width: 80%;
-      }
-    }
-
-    @media (max-width: 991.98px) {
-      .topbar-wrap {
-        padding: 16px 22px 0;
-      }
-
-      .topbar-nav {
-        max-width: 100%;
-        border-radius: 18px;
-        padding: 12px 14px;
-      }
-
-      .nav-tools {
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        gap: 10px !important;
-      }
-
-      .platform-brand-title {
-        font-size: 1rem;
-      }
-
-      .platform-brand-subtitle {
-        font-size: 0.66rem;
-      }
-    }
-
-    @media (max-width: 575.98px) {
-      .topbar-wrap {
-        padding: 14px 14px 0;
-      }
-
-      .platform-logo-box {
-        width: 42px;
-        height: 42px;
-        border-radius: 14px;
-      }
-
-      .platform-logo-box i {
-        font-size: 1.05rem;
-      }
-
-      .platform-brand-title {
-        font-size: 0.95rem;
-      }
-
-      .platform-brand-subtitle {
-        font-size: 0.62rem;
-      }
-
-      .nav-chip-btn,
-      .nav-chip-select {
-        min-height: 40px;
-        font-size: 0.92rem;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Egypt Real Estate Dashboard 2021-2030</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Navbar -->
-  <div class="topbar-wrap">
-    <nav class="navbar navbar-expand-lg navbar-dark topbar-nav">
-      <a class="navbar-brand platform-brand" href="#">
-        <span class="platform-logo-box">
-          <i class="fas fa-city"></i>
-        </span>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
+  <a class="navbar-brand" href="#">🏢Egypt Real Estate</a>
+  <div class="ms-auto d-flex gap-2 align-items-center">
+    <!-- Dropdown المحافظات -->
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="cityDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        All Cities
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="cityDropdown" id="cityMenu">
+        <li><a class="dropdown-item city-item" href="#" data-city="all">All Cities</a></li>
+      </ul>
+    </div>
+<a href="المحافظات/index1.html" class="btn btn-primary">المحافظات</a>
+    <!-- Dropdown السنة -->
+    <select id="yearFilter" class="form-select w-auto">
+      <option value="all">All Years</option>
+      <option value="2021">2021</option>
+      <option value="2022">2022</option>
+      <option value="2023">2023</option>
+      <option value="2024">2024</option>
+      <option value="2025">2025</option>
+      <option value="2026">2026</option>
+      <option value="2027">2027</option>
+      <option value="2028">2028</option>
+      <option value="2029">2029</option>
+      <option value="2030">2030</option>
+    </select>
+  </div>
+</nav>
 
-        <span class="platform-brand-text">
-          <span class="platform-brand-title">Aqari Egypt Platform</span>
-          <span class="platform-brand-subtitle">Market Intelligence Dashboard</span>
-        </span>
-      </a>
+<div class="container-fluid mt-4">
 
-      <div class="ms-auto d-flex gap-2 align-items-center nav-tools">
-        <div class="dropdown">
-          <button
-            class="btn dropdown-toggle nav-chip-btn nav-city-btn"
-            type="button"
-            id="cityDropdown"
-            data-bs-toggle="dropdown"
-            aria-expanded="false">
-            <i class="bi bi-geo-alt me-1"></i>
-            All Cities
-          </button>
-
-          <ul class="dropdown-menu nav-menu" aria-labelledby="cityDropdown" id="cityMenu">
-            <li><a class="dropdown-item city-item" href="#" data-city="all">All Cities</a></li>
-          </ul>
-        </div>
-
-        <a href="المحافظات/index1.html" class="btn btn-primary nav-chip-btn nav-gov-btn">
-          <i class="bi bi-buildings me-1"></i>
-          المحافظات
-        </a>
-
-        <select id="yearFilter" class="form-select w-auto nav-chip-select">
-          <option value="all">All Years</option>
-          <option value="2021">2021</option>
-          <option value="2022">2022</option>
-          <option value="2023">2023</option>
-          <option value="2024">2024</option>
-          <option value="2025">2025</option>
-          <option value="2026">2026</option>
-          <option value="2027">2027</option>
-          <option value="2028">2028</option>
-          <option value="2029">2029</option>
-          <option value="2030">2030</option>
-        </select>
-      </div>
-    </nav>
+  <!-- Cards -->
+  <div class="row g-3 mb-4" id="overview">
+    <div class="col-md-3 col-6"><div class="card p-3 text-center"><h6>Avg Price</h6><h3 id="avgPrice">0</h3></div></div>
+    <div class="col-md-3 col-6"><div class="card p-3 text-center"><h6>Total Transactions</h6><h3 id="totalTx">0</h3></div></div>
+    <div class="col-md-3 col-6"><div class="card p-3 text-center"><h6>Growth %</h6><h3 id="growth">0%</h3></div></div>
+    <div class="col-md-3 col-6"><div class="card p-3 text-center"><h6>Market Share</h6><h3 id="mShare">0%</h3></div></div>
   </div>
 
-  <div class="container-fluid mt-4">
-
-    <!-- Cards -->
-    <div class="row g-3 mb-4" id="overview">
-      <div class="col-md-3 col-6"><div class="card p-3 text-center"><h6>Avg Price</h6><h3 id="avgPrice">0</h3></div></div>
-      <div class="col-md-3 col-6"><div class="card p-3 text-center"><h6>Total Transactions</h6><h3 id="totalTx">0</h3></div></div>
-      <div class="col-md-3 col-6"><div class="card p-3 text-center"><h6>Growth %</h6><h3 id="growth">0%</h3></div></div>
-      <div class="col-md-3 col-6"><div class="card p-3 text-center"><h6>Market Share</h6><h3 id="mShare">0%</h3></div></div>
-    </div>
-
-    <!-- Charts -->
-    <div class="row g-3 mb-4" id="analytics">
-      <div class="col-lg-6">
-        <div class="card p-3 chart-card">
-          <h6>Price Forecast 2021-2030</h6>
-          <canvas id="forecastChart"></canvas>
-        </div>
-      </div>
-      <div class="col-lg-6">
-        <div class="card p-3 chart-card">
-          <h6>Market Share</h6>
-          <canvas id="pieChart"></canvas>
-        </div>
-      </div>
-      <div class="col-lg-12 mt-3">
-        <div class="card p-3 chart-card">
-          <h6>Transactions per City</h6>
-          <canvas id="barChart"></canvas>
-        </div>
+  <!-- Charts -->
+  <div class="row g-3 mb-4" id="analytics">
+    <div class="col-lg-6">
+      <div class="card p-3 chart-card">
+        <h6>Price Forecast 2021-2030</h6>
+        <canvas id="forecastChart"></canvas>
       </div>
     </div>
-
-    <!-- Map -->
-    <div class="row g-3">
-      <div class="col-lg-12">
-        <div class="card p-3">
-          <h6>City Map</h6>
-          <div id="map"></div>
-        </div>
+    <div class="col-lg-6">
+      <div class="card p-3 chart-card">
+        <h6>Market Share</h6>
+        <canvas id="pieChart"></canvas>
       </div>
     </div>
-
+    <div class="col-lg-12 mt-3">
+      <div class="card p-3 chart-card">
+        <h6>Transactions per City</h6>
+        <canvas id="barChart"></canvas>
+      </div>
+    </div>
   </div>
 
-  <!-- Footer Start -->
-  <footer class="footer-section text-white position-relative pt-5 pb-3 mt-5">
-    <div class="footer-bg"></div>
-    <div class="footer-glow footer-glow-1"></div>
-    <div class="footer-glow footer-glow-2"></div>
-
-    <div class="container position-relative" style="z-index: 2;">
-      <div class="row g-4 align-items-start">
-
-        <div class="col-lg-4 col-md-6">
-          <h2 class="fw-bold mb-3 footer-brand">
-            Aqari <span class="text-info">مصر</span>
-          </h2>
-          <p class="footer-text mb-4">
-            منصة ذكية لتحليل وعرض العقارات في مصر، تساعدك على اكتشاف الأسعار،
-            مقارنة المناطق، واتخاذ قرارات عقارية أفضل بثقة ووضوح.
-          </p>
-
-          <div class="d-flex gap-3 footer-social">
-            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-x-twitter"></i></a>
-          </div>
-        </div>
-
-        <div class="col-lg-2 col-md-6 col-6">
-          <h4 class="footer-title mb-3">روابط سريعة</h4>
-          <ul class="list-unstyled footer-links">
-            <li><a href="#">الرئيسية</a></li>
-            <li><a href="#">العقارات</a></li>
-            <li><a href="#">تحليل الأسعار</a></li>
-            <li><a href="#">المناطق</a></li>
-            <li><a href="#">تواصل معنا</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-3 col-md-6 col-6">
-          <h4 class="footer-title mb-3">أنواع العقارات</h4>
-          <ul class="list-unstyled footer-links">
-            <li><a href="#">شقق للبيع</a></li>
-            <li><a href="#">شقق للإيجار</a></li>
-            <li><a href="#">فيلات</a></li>
-            <li><a href="#">محلات تجارية</a></li>
-            <li><a href="#">أراضي</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-3 col-md-6">
-          <h4 class="footer-title mb-3">تواصل معنا</h4>
-          <ul class="list-unstyled footer-contact m-0">
-            <li class="mb-3 d-flex align-items-center gap-2">
-              <i class="fas fa-map-marker-alt text-info"></i>
-              <span>القاهرة، مصر</span>
-            </li>
-            <li class="mb-3 d-flex align-items-center gap-2">
-              <i class="fas fa-phone text-info"></i>
-              <span>+20 100 123 4567</span>
-            </li>
-            <li class="mb-3 d-flex align-items-center gap-2">
-              <i class="fas fa-envelope text-info"></i>
-              <span>info@aqari-eg.com</span>
-            </li>
-            <li class="mb-3 d-flex align-items-center gap-2">
-              <i class="fas fa-clock text-info"></i>
-              <span>يوميًا من 9 ص إلى 10 م</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <hr class="footer-line my-4">
-
-      <div class="row align-items-center text-center text-md-start">
-        <div class="col-md-6 mb-2 mb-md-0">
-          <p class="mb-0 small text-light">
-            © <span id="year"></span> Aqari مصر - جميع الحقوق محفوظة
-          </p>
-        </div>
-        <div class="col-md-6 text-center text-md-end">
-          <a href="#" class="small text-decoration-none text-light ms-3">سياسة الخصوصية</a>
-          <a href="#" class="small text-decoration-none text-light ms-3">الشروط والأحكام</a>
-        </div>
+  <!-- Map -->
+  <div class="row g-3">
+    <div class="col-lg-12">
+      <div class="card p-3">
+        <h6>City Map</h6>
+        <div id="map"></div>
       </div>
     </div>
-  </footer>
-  <!-- Footer End -->
+  </div>
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
+</div>
 
-    window.addEventListener("scroll", function () {
-      const navbar = document.querySelector(".topbar-nav");
-      if (!navbar) return;
 
-      if (window.scrollY > 20) {
-        navbar.classList.add("nav-scrolled");
-      } else {
-        navbar.classList.remove("nav-scrolled");
-      }
-    });
-  </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="script.js"></script>
+<!-- Footer Start -->
+<style>
+  .footer-section {
+    background: linear-gradient(135deg, #081224, #0d1b3a, #10264d);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .footer-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(13, 202, 240, 0.12), transparent 25%),
+      radial-gradient(circle at 80% 30%, rgba(13, 110, 253, 0.12), transparent 25%),
+      radial-gradient(circle at 50% 100%, rgba(255, 255, 255, 0.05), transparent 30%);
+    animation: bgMove 10s ease-in-out infinite alternate;
+  }
+
+  .footer-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.35;
+    animation: floatGlow 8s ease-in-out infinite;
+  }
+
+  .footer-glow-1 {
+    width: 220px;
+    height: 220px;
+    background: #0dcaf0;
+    top: -60px;
+    left: -60px;
+  }
+
+  .footer-glow-2 {
+    width: 260px;
+    height: 260px;
+    background: #0d6efd;
+    bottom: -100px;
+    right: -80px;
+    animation-delay: 2s;
+  }
+
+  .footer-brand {
+    font-size: 2rem;
+    letter-spacing: 0.5px;
+    position: relative;
+    display: inline-block;
+  }
+
+  .footer-brand::after {
+    content: "";
+    display: block;
+    width: 65%;
+    height: 3px;
+    margin-top: 10px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #0dcaf0, transparent);
+    animation: linePulse 2s infinite ease-in-out;
+  }
+
+  .footer-text {
+    color: rgba(255, 255, 255, 0.78);
+    line-height: 1.9;
+    max-width: 95%;
+  }
+
+  .footer-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+
+  .footer-title::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -8px;
+    width: 45px;
+    height: 3px;
+    border-radius: 20px;
+    background: #0dcaf0;
+    transition: 0.4s ease;
+  }
+
+  .footer-title:hover::after {
+    width: 70px;
+  }
+
+  .footer-links li {
+    margin-bottom: 12px;
+  }
+
+  .footer-links a {
+    color: rgba(255, 255, 255, 0.78);
+    text-decoration: none;
+    transition: all 0.35s ease;
+    position: relative;
+  }
+
+  .footer-links a::before {
+    content: "";
+    position: absolute;
+    right: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 2px;
+    background: #0dcaf0;
+    transition: 0.35s ease;
+  }
+
+  .footer-links a:hover {
+    color: #fff;
+    padding-right: 12px;
+    text-shadow: 0 0 10px rgba(13, 202, 240, 0.5);
+  }
+
+  .footer-links a:hover::before {
+    width: 8px;
+  }
+
+  .footer-contact li {
+    color: rgba(255, 255, 255, 0.82);
+    transition: 0.3s ease;
+  }
+
+  .footer-contact li:hover {
+    transform: translateX(-4px);
+    color: #fff;
+  }
+
+  .footer-social .social-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #fff;
+    font-size: 18px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    transition: all 0.35s ease;
+  }
+
+  .footer-social .social-icon:hover {
+    transform: translateY(-8px) scale(1.08);
+    background: linear-gradient(135deg, #0dcaf0, #0d6efd);
+    color: #fff;
+    box-shadow: 0 12px 25px rgba(13, 202, 240, 0.35);
+  }
+
+  .footer-line {
+    border-color: rgba(255, 255, 255, 0.12) !important;
+  }
+
+  @keyframes floatGlow {
+    0% {
+      transform: translateY(0) translateX(0) scale(1);
+    }
+    50% {
+      transform: translateY(-20px) translateX(15px) scale(1.08);
+    }
+    100% {
+      transform: translateY(10px) translateX(-10px) scale(0.96);
+    }
+  }
+
+  @keyframes bgMove {
+    0% {
+      transform: scale(1) translateY(0);
+    }
+    100% {
+      transform: scale(1.05) translateY(-10px);
+    }
+  }
+
+  @keyframes linePulse {
+    0%, 100% {
+      opacity: 0.7;
+      width: 65%;
+    }
+    50% {
+      opacity: 1;
+      width: 80%;
+    }
+  }
+</style>
+
+<footer class="footer-section text-white position-relative pt-5 pb-3 mt-5">
+  <div class="footer-bg"></div>
+  <div class="footer-glow footer-glow-1"></div>
+  <div class="footer-glow footer-glow-2"></div>
+
+  <div class="container position-relative" style="z-index: 2;">
+    <div class="row g-4 align-items-start">
+
+      <div class="col-lg-4 col-md-6">
+        <h2 class="fw-bold mb-3 footer-brand">
+          Aqari <span class="text-info">مصر</span>
+        </h2>
+        <p class="footer-text mb-4">
+          منصة ذكية لتحليل وعرض العقارات في مصر، تساعدك على اكتشاف الأسعار،
+          مقارنة المناطق، واتخاذ قرارات عقارية أفضل بثقة ووضوح.
+        </p>
+
+        <div class="d-flex gap-3 footer-social">
+          <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="social-icon"><i class="fab fa-x-twitter"></i></a>
+        </div>
+      </div>
+
+      <div class="col-lg-2 col-md-6 col-6">
+        <h4 class="footer-title mb-3">روابط سريعة</h4>
+        <ul class="list-unstyled footer-links">
+          <li><a href="#">الرئيسية</a></li>
+          <li><a href="#">العقارات</a></li>
+          <li><a href="#">تحليل الأسعار</a></li>
+          <li><a href="#">المناطق</a></li>
+          <li><a href="#">تواصل معنا</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-3 col-md-6 col-6">
+        <h4 class="footer-title mb-3">أنواع العقارات</h4>
+        <ul class="list-unstyled footer-links">
+          <li><a href="#">شقق للبيع</a></li>
+          <li><a href="#">شقق للإيجار</a></li>
+          <li><a href="#">فيلات</a></li>
+          <li><a href="#">محلات تجارية</a></li>
+          <li><a href="#">أراضي</a></li>
+        </ul>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <h4 class="footer-title mb-3">تواصل معنا</h4>
+        <ul class="list-unstyled footer-contact m-0">
+          <li class="mb-3 d-flex align-items-center gap-2">
+            <i class="fas fa-map-marker-alt text-info"></i>
+            <span>القاهرة، مصر</span>
+          </li>
+          <li class="mb-3 d-flex align-items-center gap-2">
+            <i class="fas fa-phone text-info"></i>
+            <span>+20 100 123 4567</span>
+          </li>
+          <li class="mb-3 d-flex align-items-center gap-2">
+            <i class="fas fa-envelope text-info"></i>
+            <span>info@aqari-eg.com</span>
+          </li>
+          <li class="mb-3 d-flex align-items-center gap-2">
+            <i class="fas fa-clock text-info"></i>
+            <span>يوميًا من 9 ص إلى 10 م</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="footer-line my-4">
+
+    <div class="row align-items-center text-center text-md-start">
+      <div class="col-md-6 mb-2 mb-md-0">
+        <p class="mb-0 small text-light">
+          © 2026 Aqari مصر - جميع الحقوق محفوظة
+        </p>
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <a href="#" class="small text-decoration-none text-light ms-3">سياسة الخصوصية</a>
+        <a href="#" class="small text-decoration-none text-light ms-3">الشروط والأحكام</a>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- Footer End -->
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
